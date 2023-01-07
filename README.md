@@ -1,11 +1,14 @@
 # Print-A-Gif
 Turn any GIF into a printable flip book via bash script!
 
-<b>This is is a Linux bash script re-write of the original Print-A-Gif by stupotmcdoodlepip.</b> But it doesn't work the same way as the original in all the aspects but it mostly doesn and the spirit is the same.
+<b>This is is a Linux bash script re-write of the original Print-A-Gif by stupotmcdoodlepip.</b> But it doesn't work the same way as the original in all the aspects but it mostly does and the spirit is the same.
 
 You will need ImageMagick for image processing and bc installed to have this running properly.
 
-Script usage: Print-A-Gif.sh [GIFFILE]
+Script usage:
+```console
+Print-A-Gif.sh [GIFFILE]
+```
 
 There is no GUI. You need to supply parameters in the script file itself.
 ```console
@@ -31,7 +34,7 @@ Some notes on the parameters:
 
 - CUTSPACING: This is the spacing between each frame. I tend to leave this set to 1 as it makes it easier to cut all the frames the same size with an scalpel.
 
-- (New) FRAMEMULTIPLIER: This allows to repeat same frame multiple times. This may be useful to adjust the flip book speed.
+- <span style="color:red">(New parameter)</span> FRAMEMULTIPLIER: This allows to repeat same frame multiple times. This may be useful to adjust the flip book speed.
 
 - Bear in mind that TABWIDTH, PRINTMARGIN, CUTSPACING and FRAMEMULTIPLIER are subject to change when printed due to final scaling. Experiment if necessary.
 
