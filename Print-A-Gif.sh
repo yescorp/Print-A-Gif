@@ -3,7 +3,7 @@
 # PARAMETERS DEFINITION
 REPEATX=2
 REPEATY=3
-TABWIDTH=44
+TABWIDTH="AUTO"
 PRINTMARGIN=30
 CUTSPACING=1
 FRAMEMULTIPLIER=3
@@ -28,8 +28,13 @@ fi
 # TBD - Check if the input is provided
 # Image data
 IMWIDTH=$(identify -format '%w' $INPUTFILE[0])
+if [ "$TABWIDTH" = "AUTO" ]
+then
+    TABWIDTH="$(bc <<< "($IMWIDTH*0.2+0.5)/1")"
+fi
+echo "┣ tab width:" $TABWIDTH
 IMHEIGHT=$(identify -format '%h' $INPUTFILE[0])
-NEW_IMWH="$(bc <<< "$IMWIDTH + $TABWIDTH")x$IMHEIGHT" 
+NEW_IMWH="$(bc <<< "$IMWIDTH + $TABWIDTH")x$IMHEIGHT"
 
 # Create printable PDF
 echo "┣ image width x height:" $IMWIDTH"x"$IMHEIGHT
@@ -117,7 +122,7 @@ OUTPUTFILE="flipbook-"
 OUTPUTFILE+=$(basename "$INPUTFILE" .gif)
 OUTPUTFILE+=".pdf"
 echo -ne "┣ exporting $OUTPUTFILE ... "
-magick convert tmp/page-*.png -page a4 output.pdf
+magick convert tmp/page-*.png -page a4 $OUTPUTFILE
 echo "done"
 # Clean up
 rm -r tmp
