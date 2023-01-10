@@ -15,20 +15,22 @@ There is no GUI. You need to supply parameters in the script file itself.
 #####################################
 # PARAMETERS DEFINITION
 REPEATX=2
-REPEATY=3
+REPEATY="AUTO"
 TABWIDTH="AUTO"
+TABWIDTH_AUTO=30
 PRINTMARGIN=30
 CUTSPACING=1
 FRAMEMULTIPLIER=3
+ANNOTATIONSIZE=30
 #####################################
 ```
 The notes and tips below are mostly coming from the original!
 
 Some notes on the parameters:  
 
-- Use the REPEATX and REPEATY controls to choose how the images are tiled. I've found that 2 frames wide works nicely, then fit as many as you can vertically. If the overall tile pattern exceeds the size of the 'paper', each frame will be scaled so that either the full height or the full width of the paper is utilised without changing the aspect ratio of the frame. The actual frame sizes will not be modified in the final output file, so no resolution is lost. You will need to scale to fit the page when printing.
+- Use the REPEATX and REPEATY controls to choose how the images are tiled. I've found that 2 frames on wide works nicely. If REPEATY is set to "AUTO" then the script will fit as many as can vertically , otherwise you can provide any number you see fit.
 
-- TABWIDTH: This is the width of the gluing / clamping area at the left of the frames. This is automatically set to 20% of the width of the original frame but can be adjusted if preferred.
+- TABWIDTH: This is the width of the gluing / clamping area at the left of the frames. If this is set to "AUTO" then the TABWIDTH is automatically set to TABWIDTH_AUTO [%] of the width of the original frame but can be adjusted if preferred.
 
 - PRINTMARGIN: This is the margin around the edge of each page of frames in the final output file. Adjust so that nothing is lost from the edges when printing. Ideal value is 0 as it will save you some cutting.
 
@@ -37,6 +39,8 @@ Some notes on the parameters:
 - <span style="color:red">(New parameter)</span> FRAMEMULTIPLIER: This allows to repeat same frame multiple times. This may be useful to adjust the flip book speed.
 
 - Bear in mind that TABWIDTH, PRINTMARGIN, CUTSPACING and FRAMEMULTIPLIER are subject to change when printed due to final scaling. Experiment if necessary.
+
+- <span style="color:red">(New parameter)</span> ANNOTATIONSIZE: This allows to set the font size for the annotations. This relative value and shall be adjusted visually when seeing the result. The actual text size for the annotations is calculated automatically.
 
 - All the interim images are placed in "tmp" folder and deleted at the end
 
@@ -65,18 +69,20 @@ Example output of the script:
 PRINT-A-GIF
 Processing file: the-simpsons-homer-simpson.gif
 ┏━━━━━
-┣ tab width: 44
+┣ tab width: 66
+┣ image grid per page: 2x5
 ┣ image width x height: 220x165
-┣ output image width x height: 264x165
+┣ output image width x height: 286x165
 ┣ frame count: 29
 ┣ frame multiplier: 3
-┣ Adding repeating frames ... done
+┣ adding repeating frames ... done
 ┣ enhanced frame count:  87
-┣ frames per page:  6
+┣ frames per page:  10
 ┣ missing frame count:  3
 ┣ adding frames ... done
-┣ page count:  15
-┣ annotating frames ... done
+┣ page count:  9
+┣ annotating frames (text size 7) ... done
 ┣ preparing pages ... done
 ┣ exporting flipbook-the-simpsons-homer-simpson.pdf ... done
+┻
 ```

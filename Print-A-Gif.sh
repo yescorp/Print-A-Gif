@@ -2,11 +2,13 @@
 #####################################
 # PARAMETERS DEFINITION
 REPEATX=2
-REPEATY=3
+REPEATY="AUTO"
 TABWIDTH="AUTO"
-PRINTMARGIN=30
+TABWIDTH_AUTO=30
+PRINTMARGIN=50
 CUTSPACING=1
 FRAMEMULTIPLIER=3
+ANNOTATIONSIZE=30
 #####################################
 # Input
 if [ $# -eq 0 ]
@@ -30,11 +32,23 @@ fi
 IMWIDTH=$(identify -format '%w' $INPUTFILE[0])
 if [ "$TABWIDTH" = "AUTO" ]
 then
-    TABWIDTH="$(bc <<< "($IMWIDTH*0.2+0.5)/1")"
+    TABWIDTH=$(bc <<< "($IMWIDTH*$TABWIDTH_AUTO/100+0.5)/1")
 fi
 echo "┣ tab width:" $TABWIDTH
 IMHEIGHT=$(identify -format '%h' $INPUTFILE[0])
 NEW_IMWH="$(bc <<< "$IMWIDTH + $TABWIDTH")x$IMHEIGHT"
+
+if [ "$REPEATY" = "AUTO" ]
+then
+    # Paper dimensions (A4) = 2480 x 3508 at 300 DPI/PPI
+    # 2480 ..... TOTALWIDTH
+    # 3480 ..... REPEAT_Y*TOTALHEIGHT
+    # So: REPEAT_Y*TOTALHEIGHT = TOTALWIDTH*3480/2480
+    TOTALWIDTH=$(bc <<< "$REPEATX*($IMWIDTH+$TABWIDTH)+2*$PRINTMARGIN+2*$CUTSPACING")
+    TOTALHEIGHT=$(bc <<< "$IMHEIGHT+2*$CUTSPACING")
+    REPEATY=$(bc <<< "$TOTALWIDTH*3480/2460/$TOTALHEIGHT")
+fi
+echo "┣ image grid per page:" $REPEATX"x"$REPEATY
 
 # Create printable PDF
 echo "┣ image width x height:" $IMWIDTH"x"$IMHEIGHT
@@ -54,7 +68,7 @@ magick convert \
 FILECOUNT=$(ls -l tmp/out*.png | wc -l)
 echo "┣ frame count:" $FILECOUNT
 echo "┣ frame multiplier:" $FRAMEMULTIPLIER
-echo -ne "┣ Adding repeating frames ... "
+echo -ne "┣ adding repeating frames ... "
 if [ "$FRAMEMULTIPLIER" -gt "1" ]
 then
     for (( i=$(bc <<< "$FILECOUNT-1"); i>=0; i-- ))
@@ -91,13 +105,14 @@ done
 echo "done"
 echo "┣ page count: " $PAGECOUNT
 # Write frame number in binding tab
-echo -ne "┣ annotating frames ... "
+TEXTSIZE=$(bc <<< "$ANNOTATIONSIZE*($IMWIDTH + $TABWIDTH)/1120")
+echo -ne "┣ annotating frames (text size $TEXTSIZE) ... "
 for (( i=1; i<$FILECOUNT+$MISSINGFRAMECOUNT; i++ ))
 do 
-    magick convert tmp/out-$i.png -gravity West -fill blue -pointsize 10 -annotate 270x270+10+0 "$i" tmp/out-$i.png 
+    magick convert tmp/out-$i.png -gravity West -fill blue -pointsize $TEXTSIZE -annotate 270x270+$ANNOTATIONSIZE+0 "$i" tmp/out-$i.png 
 done
 echo "done"
-# Prepare pages - Paper dimensions (A4) = 210 x 297
+# Prepare pages
 WIDTHPADDING=$PRINTMARGIN
 HEIGHTPADDING=$PRINTMARGIN
 PAGELIST=""
