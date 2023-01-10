@@ -40,7 +40,7 @@ Some notes on the parameters:
 
 - Bear in mind that TABWIDTH, PRINTMARGIN, CUTSPACING and FRAMEMULTIPLIER are subject to change when printed due to final scaling. Experiment if necessary.
 
-- <span style="color:red">(New parameter)</span> ANNOTATIONSIZE: This allows to set the font size for the annotations. This relative value and shall be adjusted visually when seeing the result. The actual text size for the annotations is calculated automatically.
+- <span style="color:red">(New parameter)</span> ANNOTATIONSIZE: This allows to set the font size for the annotations. This is relative value and shall be adjusted visually when seeing the result. The actual text size for the annotations is calculated automatically.
 
 - All the interim images are placed in "tmp" folder and deleted at the end
 
