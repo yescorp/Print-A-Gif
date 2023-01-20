@@ -1,10 +1,12 @@
 #! /bin/bash
 #####################################
 # PARAMETERS DEFINITION
-REPEATX=2
+REPEATX=1
 REPEATY="AUTO"
 TABWIDTH="AUTO"
 TABWIDTH_AUTO=30
+TABCOLOR="gray90"
+TABCOLOR_COVER="white"
 PRINTMARGIN=50
 CUTSPACING=1
 FRAMEMULTIPLIER=3
@@ -60,13 +62,24 @@ magick convert $INPUTFILE -coalesce tmp/$INPUTFILE
 INPUTFILE="tmp/"$INPUTFILE
 
 magick convert \
-    -coalesce -gravity east -extent $NEW_IMWH -background gray90 -bordercolor yellow -border $CUTSPACING \
+    -coalesce -gravity east -extent $NEW_IMWH -background $TABCOLOR -bordercolor yellow -border $CUTSPACING \
     $INPUTFILE tmp/out.png
-
-# Multiply frames
 
 FILECOUNT=$(ls -l tmp/out*.png | wc -l)
 echo "┣ frame count:" $FILECOUNT
+
+# Add first and last frame as covers
+echo -ne "┣ creating cover frames ... "
+magick convert \
+    -coalesce -gravity east -extent $NEW_IMWH -background $TABCOLOR_COVER -bordercolor yellow -border $CUTSPACING \
+    $INPUTFILE[0] tmp/cover-first.png
+
+magick convert \
+    -coalesce -gravity east -extent $NEW_IMWH -background $TABCOLOR_COVER -bordercolor yellow -border $CUTSPACING \
+    $INPUTFILE[$(bc <<< "$FILECOUNT-1")] tmp/cover-last.png    
+echo "done"
+
+# Multiply frames
 echo "┣ frame multiplier:" $FRAMEMULTIPLIER
 echo -ne "┣ adding repeating frames ... "
 if [ "$FRAMEMULTIPLIER" -gt "1" ]
@@ -85,6 +98,9 @@ then
 fi
 echo "done"
 FILECOUNT=$(ls -l tmp/out*.png | wc -l)
+mv tmp/cover-first.png tmp/out-$(bc <<< "$FILECOUNT").png
+mv tmp/cover-last.png tmp/out-$(bc <<< "$FILECOUNT+1").png
+FILECOUNT=$(ls -l tmp/out*.png | wc -l)
 echo "┣ enhanced frame count: " $FILECOUNT
 FRAMESPERPAGE=$(bc <<< "$REPEATX * $REPEATY")
 echo "┣ frames per page: " $FRAMESPERPAGE
@@ -100,14 +116,14 @@ echo -ne "┣ adding frames ... "
 for (( i=$FILECOUNT; i<$FILECOUNT+$MISSINGFRAMECOUNT; i++ ))
 do
     # Just making a blank frame from scratch results in weird spacing for some reason, so take an existing frame and just wipe it clean
-    magick convert tmp/out-0.png -alpha Opaque +level-colors White tmp/out-$i.png
+    magick convert tmp/out-0.png -alpha Opaque +level-colors $TABCOLOR_COVER tmp/out-$i.png
 done
 echo "done"
 echo "┣ page count: " $PAGECOUNT
 # Write frame number in binding tab
 TEXTSIZE=$(bc <<< "$ANNOTATIONSIZE*($IMWIDTH + $TABWIDTH)/1120")
 echo -ne "┣ annotating frames (text size $TEXTSIZE) ... "
-for (( i=1; i<$FILECOUNT+$MISSINGFRAMECOUNT; i++ ))
+for (( i=1; i<$(bc <<< "$FILECOUNT - 2"); i++ ))
 do 
     magick convert tmp/out-$i.png -gravity West -fill blue -pointsize $TEXTSIZE -annotate 270x270+$ANNOTATIONSIZE+0 "$i" tmp/out-$i.png 
 done

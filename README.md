@@ -18,6 +18,8 @@ REPEATX=2
 REPEATY="AUTO"
 TABWIDTH="AUTO"
 TABWIDTH_AUTO=30
+TABCOLOR="gray90"
+TABCOLOR_COVER="white"
 PRINTMARGIN=30
 CUTSPACING=1
 FRAMEMULTIPLIER=3
@@ -31,6 +33,10 @@ Some notes on the parameters:
 - Use the REPEATX and REPEATY controls to choose how the images are tiled. I've found that 2 frames on wide works nicely. If REPEATY is set to "AUTO" then the script will fit as many as can vertically , otherwise you can provide any number you see fit.
 
 - TABWIDTH: This is the width of the gluing / clamping area at the left of the frames. If this is set to "AUTO" then the TABWIDTH is automatically set to TABWIDTH_AUTO [%] of the width of the original frame but can be adjusted if preferred.
+
+- <span style="color:red">(New parameter)</span> TABCOLOR: This is the background color used for the clamping area.
+
+- <span style="color:red">(New parameter)</span> TABCOLOR_COVER: This is the background color used for the clamping area in the last 2 frames. The tool automatically adds first and last frame as possible covers at the end. This color is also used as background for additional missing frames that fill up the last page.
 
 - PRINTMARGIN: This is the margin around the edge of each page of frames in the final output file. Adjust so that nothing is lost from the edges when printing. Ideal value is 0 as it will save you some cutting.
 
@@ -70,17 +76,18 @@ PRINT-A-GIF
 Processing file: the-simpsons-homer-simpson.gif
 ┏━━━━━
 ┣ tab width: 66
-┣ image grid per page: 2x5
+┣ image grid per page: 1x3
 ┣ image width x height: 220x165
 ┣ output image width x height: 286x165
 ┣ frame count: 29
+┣ creating cover frames ... done
 ┣ frame multiplier: 3
 ┣ adding repeating frames ... done
-┣ enhanced frame count:  87
-┣ frames per page:  10
-┣ missing frame count:  3
+┣ enhanced frame count:  89
+┣ frames per page:  3
+┣ missing frame count:  1
 ┣ adding frames ... done
-┣ page count:  9
+┣ page count:  30
 ┣ annotating frames (text size 7) ... done
 ┣ preparing pages ... done
 ┣ exporting flipbook-the-simpsons-homer-simpson.pdf ... done
